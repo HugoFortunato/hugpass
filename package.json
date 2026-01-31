@@ -1,0 +1,35 @@
+{
+  "name": "03-api-solid",
+  "version": "1.0.0",
+  "description": "GymPass style app.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "tsx watch src/server.ts",
+    "start": "node build/server.js",
+    "build": "tsup src --out-dir build",
+    "lint": "eslint src --ext .ts,.tsx,.js,.jsx",
+    "lint:fix": "eslint src --ext .ts,.tsx,.js,.jsx --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json}\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "18.14.1",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "prisma": "4.10.1",
+    "tsup": "6.6.3",
+    "tsx": "4.19.2",
+    "typescript": "4.9.5"
+  },
+  "dependencies": {
+    "@prisma/client": "4.10.1",
+    "@rocketseat/eslint-config": "2.2.2",
+    "dotenv": "17.2.3",
+    "fastify": "4.13.0",
+    "zod": "4.3.6"
+  }
+}
