@@ -14,7 +14,8 @@ model User {
   password_hash String
   created_at    DateTime @default(now())
 
-  checkIns CheckIn[]
+  checkIns   CheckIn[]
+  Membership Membership[]
 
   @@map("users")
 }
@@ -44,4 +45,16 @@ model Gym {
   checkIns CheckIn[]
 
   @@map("gyms")
+}
+
+model Membership {
+  id         String   @id @default(uuid())
+  user_id    String
+  start_date DateTime
+  end_date   DateTime
+  active     Boolean  @default(true)
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@map("memberships")
 }
