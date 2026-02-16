@@ -1,12 +1,15 @@
 import { MembershipsRepository } from '@/repositories/membership-repository'
 import { UserAlreadyExistsError } from './errors/use-already-exists-error'
+import { Membership } from '@prisma/client'
 
 interface MembershipUseCaseRequest {
   userId: string
   plan: string
 }
 
-interface MembershipUseCaseResponse {}
+interface MembershipUseCaseResponse {
+  user: Membership
+}
 
 export class MembershipUseCase {
   constructor(private membershipRepository: MembershipsRepository) {}
@@ -21,7 +24,6 @@ export class MembershipUseCase {
       await this.membershipRepository.findByUserId(userId)
 
     if (userHasMembership) {
-      console.log('caiu aqui')
       throw new UserAlreadyExistsError()
     }
 
