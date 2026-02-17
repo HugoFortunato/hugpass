@@ -1,12 +1,17 @@
-import { expect, describe, it } from 'vitest'
+import { expect, describe, it, beforeEach } from 'vitest'
 import { MembershipUseCase } from './membership'
 import { InMemoryMembershipRepository } from '@/repositories/in-memory/in-memory-membership-repository'
 
-describe('Membership Use Case', () => {
-  it('should has create a membership', async () => {
-    const membershipRepository = new InMemoryMembershipRepository()
-    const membershipUseCase = new MembershipUseCase(membershipRepository)
+let membershipRepository: InMemoryMembershipRepository
+let membershipUseCase: MembershipUseCase
 
+describe('Membership Use Case', () => {
+  beforeEach(() => {
+    membershipRepository = new InMemoryMembershipRepository()
+    membershipUseCase = new MembershipUseCase(membershipRepository)
+  })
+
+  it('should has create a membership', async () => {
     const { user } = await membershipUseCase.execute({
       userId: 'user-1',
       plan: 'MONTHLY',
@@ -16,9 +21,6 @@ describe('Membership Use Case', () => {
   })
 
   it('should verify if user already has a membership', async () => {
-    const membershipRepository = new InMemoryMembershipRepository()
-    const membershipUseCase = new MembershipUseCase(membershipRepository)
-
     const { user } = await membershipUseCase.execute({
       userId: 'user-2',
       plan: 'YEARLY',
