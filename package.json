@@ -5,6 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "db:seed": "prisma db seed",
     "start:dev": "tsx watch src/server.ts",
     "start": "node build/server.js",
     "build": "tsup src --out-dir build",
@@ -19,6 +20,9 @@
   },
   "keywords": [],
   "license": "ISC",
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "author": "",
   "devDependencies": {
     "@types/bcryptjs": "2.4.6",
