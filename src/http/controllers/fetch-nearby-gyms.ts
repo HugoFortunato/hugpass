@@ -2,6 +2,7 @@ import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 
 import { makeFetchNearbyGymsUseCase } from '@/use-cases/factories/make-fetch-nearby-gyms-use-case'
+import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error'
 
 function queryValue(value: unknown): string | undefined {
   if (value === undefined || value === null) {
@@ -29,28 +30,29 @@ export async function fetchNearbyGyms(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const raw = request.query as Record<string, unknown>
-  const parsed = querySchema.safeParse({
-    latitude: queryValue(raw.latitude),
-    longitude: queryValue(raw.longitude),
+  const q = request.query as Record<string, unknown>
+
+  const { latitude, longitude } = querySchema.parse({
+    latitude: queryValue(q.latitude),
+    longitude: queryValue(q.longitude),
   })
 
-  if (!parsed.success) {
-    return reply.status(400).send({
-      message:
-        'Informe latitude e longitude na query (?latitude=&longitude=). Ex.: GET /gyms/nearby?latitude=-23.5614&longitude=-46.656',
-      issues: parsed.error.flatten(),
+  try {
+    await request.jwtVerify()
+
+    const fetchNearbyGymsUseCase = makeFetchNearbyGymsUseCase()
+
+    const { gyms } = await fetchNearbyGymsUseCase.execute({
+      userLatitude: latitude,
+      userLongitude: longitude,
     })
+
+    return reply.status(200).send({ gyms })
+  } catch (err) {
+    if (err instanceof ResourceNotFoundError) {
+      return reply.status(400).send({ message: err.message })
+    }
+
+    return reply.status(401).send({ message: 'Unauthorized.' })
   }
-
-  const { latitude, longitude } = parsed.data
-
-  const fetchNearbyGymsUseCase = makeFetchNearbyGymsUseCase()
-
-  const { gyms } = await fetchNearbyGymsUseCase.execute({
-    userLatitude: latitude,
-    userLongitude: longitude,
-  })
-
-  return reply.status(200).send({ gyms })
 }

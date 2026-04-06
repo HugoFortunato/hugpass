@@ -39,6 +39,7 @@
     "vitest": "4.0.18"
   },
   "dependencies": {
+    "@fastify/jwt": "8.0.1",
     "@prisma/client": "4.10.1",
     "@rocketseat/eslint-config": "2.2.2",
     "bcryptjs": "3.0.3",
