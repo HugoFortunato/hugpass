@@ -1,12 +1,7 @@
 import { prisma } from '@/lib/prisma'
-import { Prisma } from '@prisma/client'
+import { Gym, Prisma } from '@prisma/client'
 import { FindManyNearbyParams, GymsRepository } from '../gyms-repository'
-import { getDistanceBetweenCoordinates } from '@/utils/get-distance-between-coordinates'
-
-// findById(id: string): Promise<Gym | null>
-//   searchMany(query: string, page: number): Promise<Gym[]>
-//   findManyNearby(params: FindManyNearbyParams): Promise<Gym[]>
-//   create(data: Prisma.GymCreateInput): Promise<Gym>
+// import { getDistanceBetweenCoordinates } from '@/utils/get-distance-between-coordinates'
 
 export class PrismaGymsRepository implements GymsRepository {
   async findById(id: string) {
@@ -33,34 +28,41 @@ export class PrismaGymsRepository implements GymsRepository {
     return gyms
   }
 
-  async findManyNearby(params: FindManyNearbyParams) {
-    const gyms = await prisma.gym.findMany({
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        phone: true,
-        latitude: true,
-        longitude: true,
-      },
-    })
+  async findManyNearby({ latitude, longitude }: FindManyNearbyParams) {
+    // isso aqui não é o melhor jeito de fazer isso, mas é o jeito mais simples de fazer isso.
+    // const gyms = await prisma.gym.findMany({
+    //   select: {
+    //     id: true,
+    //     title: true,
+    //     description: true,
+    //     phone: true,
+    //     latitude: true,
+    //     longitude: true,
+    //   },
+    // })
+    // const nearbyGyms = gyms.filter((gym) => {
+    //   const distance = getDistanceBetweenCoordinates(
+    //     {
+    //       latitude: params.latitude,
+    //       longitude: params.longitude,
+    //     },
+    //     {
+    //       latitude: gym.latitude.toNumber(),
+    //       longitude: gym.longitude.toNumber(),
+    //     },
+    //   )
+    //   return distance < 10
+    // })
+    // return nearbyGyms
 
-    const nearbyGyms = gyms.filter((gym) => {
-      const distance = getDistanceBetweenCoordinates(
-        {
-          latitude: params.latitude,
-          longitude: params.longitude,
-        },
-        {
-          latitude: gym.latitude.toNumber(),
-          longitude: gym.longitude.toNumber(),
-        },
-      )
+    // isso aqui é o melhor jeito de fazer isso, escrevendo uma query SQL diretamente no prisma.
 
-      return distance < 10
-    })
+    const gyms = await prisma.$queryRaw<Gym[]>`
+     SELECT * from gyms
+     WHERE ( 6371 * acos( cos( radians(${latitude}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(${longitude}) ) + sin( radians(${latitude}) ) * sin( radians( latitude ) ) ) ) <= 10
+    `
 
-    return nearbyGyms
+    return gyms
   }
 
   async create(data: Prisma.GymCreateInput) {
@@ -70,62 +72,4 @@ export class PrismaGymsRepository implements GymsRepository {
 
     return gym
   }
-
-  //   async findByUserIdOnDate(userId: string, date: Date) {
-  //     const startOfTheDay = dayjs(date).startOf('date')
-  //     const endOfTheDay = dayjs(date).endOf('date')
-
-  //     const checkIn = await prisma.checkIn.findFirst({
-  //       where: {
-  //         user_id: userId,
-  //         created_at: {
-  //           gte: startOfTheDay.toDate(),
-  //           lte: endOfTheDay.toDate(),
-  //         },
-  //       },
-  //     })
-
-  //     return checkIn
-  //   }
-
-  //   async findManyByUserId(userId: string, page: number) {
-  //     const checkIns = await prisma.checkIn.findMany({
-  //       where: {
-  //         user_id: userId,
-  //       },
-  //       skip: (page - 1) * 20,
-  //       take: 20,
-  //     })
-
-  //     return checkIns
-  //   }
-
-  //   async countByUserId(userId: string) {
-  //     const count = await prisma.checkIn.count({
-  //       where: {
-  //         user_id: userId,
-  //       },
-  //     })
-
-  //     return count
-  //   }
-
-  //   async create(data: Prisma.CheckInUncheckedCreateInput) {
-  //     const checkIn = await prisma.checkIn.create({
-  //       data,
-  //     })
-
-  //     return checkIn
-  //   }
-
-  //   async save(data: CheckIn) {
-  //     const checkIn = await prisma.checkIn.update({
-  //       where: {
-  //         id: data.id,
-  //       },
-  //       data,
-  //     })
-
-  //     return checkIn
-  //   }
 }
