@@ -28,7 +28,7 @@ describe('Membership Use Case', () => {
 
     expect(user.active).toBe(true)
 
-    expect(() =>
+    await expect(() =>
       membershipUseCase.execute({
         userId: 'user-2',
         plan: 'YEARLY',
