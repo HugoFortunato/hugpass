@@ -14,6 +14,19 @@ export class PrismaMembershipRepository implements MembershipsRepository {
     return user
   }
 
+  async findActiveMembership(userId: string) {
+    const user = await prisma.membership.findFirst({
+      where: {
+        user_id: userId,
+        active: true,
+      },
+    })
+
+    console.log(user, 'user')
+
+    return user
+  }
+
   async create(data: Prisma.MembershipUncheckedCreateInput) {
     const user = await prisma.membership.create({
       data: {

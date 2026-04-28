@@ -23,6 +23,8 @@ export class MembershipUseCase {
     const userHasMembership =
       await this.membershipRepository.findByUserId(userId)
 
+    console.log(userHasMembership, 'userHasMembership')
+
     if (userHasMembership) {
       throw new UserAlreadyExistsError()
     }

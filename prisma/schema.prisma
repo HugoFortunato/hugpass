@@ -35,12 +35,13 @@ model CheckIn {
 }
 
 model Gym {
-  id          String  @id @default(uuid())
-  title       String
-  description String?
-  phone       String?
-  latitude    Decimal
-  longitude   Decimal
+  id               String  @id @default(uuid())
+  title            String
+  description      String?
+  phone            String?
+  latitude         Decimal
+  longitude        Decimal
+  private_classes  Boolean @default(false)
 
   checkIns CheckIn[]
 

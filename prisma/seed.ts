@@ -13,6 +13,7 @@ const gyms = [
     phone: '11987654321',
     latitude: -23.5614,
     longitude: -46.656,
+    private_classes: true,
   },
   {
     title: 'Bodytech Consolação',
@@ -20,6 +21,7 @@ const gyms = [
     phone: '11987654322',
     latitude: -23.5489,
     longitude: -46.6612,
+    private_classes: true,
   },
   {
     title: 'Blue Fit Paraíso',
@@ -27,6 +29,7 @@ const gyms = [
     phone: '11987654323',
     latitude: -23.5751,
     longitude: -46.6438,
+    private_classes: false,
   },
   {
     title: 'Academia Bela Vista',
@@ -34,6 +37,7 @@ const gyms = [
     phone: '11987654324',
     latitude: -23.5538,
     longitude: -46.6362,
+    private_classes: true,
   },
   {
     title: 'Gym Higienópolis',
@@ -41,6 +45,7 @@ const gyms = [
     phone: '11987654325',
     latitude: -23.5436,
     longitude: -46.6587,
+    private_classes: false,
   },
   {
     title: 'Fit Jardins',
@@ -48,6 +53,7 @@ const gyms = [
     phone: '11987654326',
     latitude: -23.5678,
     longitude: -46.6645,
+    private_classes: true,
   },
   {
     title: 'Cross República',
@@ -55,6 +61,7 @@ const gyms = [
     phone: '11987654327',
     latitude: -23.5453,
     longitude: -46.6441,
+    private_classes: false,
   },
   {
     title: 'Iron Liberdade',
@@ -62,6 +69,7 @@ const gyms = [
     phone: '11987654328',
     latitude: -23.5592,
     longitude: -46.6348,
+    private_classes: true,
   },
   {
     title: 'Power Vila Mariana',
@@ -69,6 +77,7 @@ const gyms = [
     phone: '11987654329',
     latitude: -23.5812,
     longitude: -46.6499,
+    private_classes: false,
   },
   {
     title: 'Strong Vila Buarque',
@@ -76,6 +85,7 @@ const gyms = [
     phone: '11987654330',
     latitude: -23.5395,
     longitude: -46.6523,
+    private_classes: true,
   },
 ]
 

@@ -1,7 +1,12 @@
 import { prisma } from '@/lib/prisma'
 import { Gym, Prisma } from '@prisma/client'
-import { FindManyNearbyParams, GymsRepository } from '../gyms-repository'
-// import { getDistanceBetweenCoordinates } from '@/utils/get-distance-between-coordinates'
+import {
+  FindManyNearbyParams,
+  GymsRepository,
+  PickSuggestedGymsParams,
+} from '../gyms-repository'
+
+import { getDistanceBetweenCoordinates } from '@/utils/get-distance-between-coordinates'
 
 export class PrismaGymsRepository implements GymsRepository {
   async findById(id: string) {
@@ -26,6 +31,43 @@ export class PrismaGymsRepository implements GymsRepository {
     })
 
     return gyms
+  }
+
+  async pickSuggestedGyms({
+    isPrivateClassesAllowed,
+    userLatitude,
+    userLongitude,
+  }: PickSuggestedGymsParams) {
+    const gyms = await prisma.gym.findMany({
+      where: {
+        private_classes: isPrivateClassesAllowed,
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        phone: true,
+        latitude: true,
+        longitude: true,
+        private_classes: true,
+      },
+    })
+
+    const nearbyGyms = gyms.filter((gym) => {
+      const distance = getDistanceBetweenCoordinates(
+        {
+          latitude: userLatitude,
+          longitude: userLongitude,
+        },
+        {
+          latitude: gym.latitude.toNumber(),
+          longitude: gym.longitude.toNumber(),
+        },
+      )
+      return distance < 10
+    })
+
+    return nearbyGyms
   }
 
   async findManyNearby({ latitude, longitude }: FindManyNearbyParams) {

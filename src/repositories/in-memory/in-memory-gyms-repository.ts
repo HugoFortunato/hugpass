@@ -1,6 +1,7 @@
 import {
   FindManyNearbyParams,
   GymsRepository,
+  PickSuggestedGymsParams,
 } from '@/repositories/gyms-repository'
 import { getDistanceBetweenCoordinates } from '@/utils/get-distance-between-coordinates'
 import { Gym, Prisma } from '@prisma/client'
@@ -36,6 +37,28 @@ export class InMemoryGymsRepository implements GymsRepository {
     })
   }
 
+  async pickSuggestedGyms({
+    isPrivateClassesAllowed,
+    userLatitude,
+    userLongitude,
+  }: PickSuggestedGymsParams) {
+    return this.items.filter((item) => {
+      if (item.private_classes !== isPrivateClassesAllowed) {
+        return false
+      }
+
+      const distance = getDistanceBetweenCoordinates(
+        { latitude: userLatitude, longitude: userLongitude },
+        {
+          latitude: item.latitude.toNumber(),
+          longitude: item.longitude.toNumber(),
+        },
+      )
+
+      return distance < 10
+    })
+  }
+
   async searchMany(query: string, page: number) {
     return this.items
       .filter((item) => item.title.includes(query))
@@ -50,6 +73,7 @@ export class InMemoryGymsRepository implements GymsRepository {
       phone: data.phone ?? null,
       latitude: new Prisma.Decimal(data.latitude.toString()),
       longitude: new Prisma.Decimal(data.longitude.toString()),
+      private_classes: data.private_classes ?? false,
       created_at: new Date(),
     }
 
