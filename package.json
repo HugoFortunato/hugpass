@@ -43,6 +43,7 @@
     "vitest": "4.0.18"
   },
   "dependencies": {
+    "@fastify/cookie": "9.4.0",
     "@fastify/jwt": "8.0.1",
     "@prisma/client": "4.10.1",
     "@rocketseat/eslint-config": "2.2.2",
